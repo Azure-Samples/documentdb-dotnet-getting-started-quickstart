@@ -80,9 +80,9 @@ namespace DocumentDB.GetStarted
             // Create a new instance of the DocumentClient
             this.client = new DocumentClient(new Uri(EndpointUri), PrimaryKey);
 
-            await this.CreateDatabaseIfNotExists("FamilyDB");
+            await this.CreateDatabaseIfNotExists("FamilyDB_vg");
 
-            await this.CreateDocumentCollectionIfNotExists("FamilyDB", "FamilyCollection");
+            await this.CreateDocumentCollectionIfNotExists("FamilyDB_vg", "FamilyCollection_vg");
 
             // Insert a document, here we create a Family object
             Family andersenFamily = new Family
@@ -111,7 +111,7 @@ namespace DocumentDB.GetStarted
                 IsRegistered = true
             };
 
-            await this.CreateFamilyDocumentIfNotExists("FamilyDB", "FamilyCollection", andersenFamily);
+            await this.CreateFamilyDocumentIfNotExists("FamilyDB_vg", "FamilyCollection_vg", andersenFamily);
 
             Family wakefieldFamily = new Family
             {
@@ -148,22 +148,22 @@ namespace DocumentDB.GetStarted
                 IsRegistered = false
             };
 
-            await this.CreateFamilyDocumentIfNotExists("FamilyDB", "FamilyCollection", wakefieldFamily);
+            await this.CreateFamilyDocumentIfNotExists("FamilyDB_vg", "FamilyCollection_vg", wakefieldFamily);
 
-            this.ExecuteSimpleQuery("FamilyDB", "FamilyCollection");
+            this.ExecuteSimpleQuery("FamilyDB_vg", "FamilyCollection_vg");
 
             // Update the Grade of the Andersen Family child
             andersenFamily.Children[0].Grade = 6;
 
-            await this.ReplaceFamilyDocument("FamilyDB", "FamilyCollection", "Andersen.1", andersenFamily);
+            await this.ReplaceFamilyDocument("FamilyDB_vg", "FamilyCollection_vg", "Andersen.1", andersenFamily);
 
-            this.ExecuteSimpleQuery("FamilyDB", "FamilyCollection");
+            this.ExecuteSimpleQuery("FamilyDB_vg", "FamilyCollection_vg");
 
             // Delete the document
-            await this.DeleteFamilyDocument("FamilyDB", "FamilyCollection", "Andersen.1");
+            await this.DeleteFamilyDocument("FamilyDB_vg", "FamilyCollection_vg", "Andersen.1");
 
             // Clean up/delete the database and client
-            await this.client.DeleteDatabaseAsync(UriFactory.CreateDatabaseUri("FamilyDB"));
+            await this.client.DeleteDatabaseAsync(UriFactory.CreateDatabaseUri("FamilyDB_vg"));
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace DocumentDB.GetStarted
         /// <returns>The Task for asynchronous execution.</returns>
         private async Task CreateDatabaseIfNotExists(string databaseName)
         {
-            // Check to verify a database with the id=FamilyDB does not exist
+            // Check to verify a database with the id=FamilyDB_vg does not exist
             try
             {
                 await this.client.ReadDatabaseAsync(UriFactory.CreateDatabaseUri(databaseName));
@@ -289,7 +289,7 @@ namespace DocumentDB.GetStarted
             // Now execute the same query via direct SQL
             IQueryable<Family> familyQueryInSql = this.client.CreateDocumentQuery<Family>(
                 UriFactory.CreateDocumentCollectionUri(databaseName, collectionName),
-                "SELECT * FROM Family WHERE Family.lastName = 'Andersen'",
+                "SELECT * FROM Family WHERE Family.LastName = 'Andersen'",
                 queryOptions);
 
             Console.WriteLine("Running direct SQL query...");
